@@ -14,16 +14,15 @@ Raihaan Usman, Imperial Aeronautics GDP 2022
 import numpy as np
 
 # Importing ground segment classes
-from components.ground import GroundStation as gs
-from components.ground import MissionControl as mc
-from components.ground import EndUser as eu
+from components import GroundStation as gs
+from components import MissionControl as mc
+from components import EndUser as eu
 
 # Importing space segment classes
-from components.space import Mothership as ms
+from components import Mothership as ms
 
 # Importing link classes
-from components.links import RF
-from components.links import Laser
+from components import RF
 
 
 
