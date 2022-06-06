@@ -7,17 +7,15 @@ dB = lambda x: 10 * np.log10(x)
 lin = lambda x: 10 ** (x / 10)
 
 
-class GroundStation:
+class Antenna:
     '''
-    The ground station class
-    
-    Contains the following:
-    - Antenna()
-    
+    The general antenna class
     
     Parameters
     ----------
-    
+    D           Antenna diameter        m
+    P           Transmit power          W
+    eta         Antenna efficiency      -
     '''
     
     def __init__(self, D, P, eta):
@@ -27,7 +25,7 @@ class GroundStation:
         
         self.beamwidth = 0
     
-     
+    
     def set_beamwidth(self, frequency):
         '''
         TX Antenna half-power beamwidth - in degrees
@@ -57,6 +55,7 @@ class GroundStation:
         else:
             # Beam shaping - directivity is a function of coverage area in degrees-squared and antenna efficiency
             self.G_tx = 46.15 - dB(A_theta) + dB(eta_tx)
+        
         
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
         self.EIRP = self.G_tx + self.P
