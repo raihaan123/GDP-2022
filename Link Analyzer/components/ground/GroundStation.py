@@ -11,7 +11,7 @@ class GroundStation:
     '''
     The ground station class
     
-    Contains the following:
+    Contains the following models:
     - Antenna()
     
     
