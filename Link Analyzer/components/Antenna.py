@@ -1,17 +1,15 @@
-### Utility functions ###
+import numpy as np
 
-# Decibel conversion lambda
-dB = lambda x: 10 * np.log10(x)
-
-# Linear conversion lambda
-lin = lambda x: 10 ** (x / 10)
+### Utility functions - will move somewhere better ###
+dB = lambda x: 10 * np.log10(x)         # Decibel conversion lambda
+lin = lambda x: 10 ** (x / 10)          # Linear conversion lambda
 
 
 class Antenna:
     '''
-    The general antenna class
+    The general Antenna class
     
-    Parameters
+    Input Parameters
     ----------
     D           Antenna diameter        m
     P           Transmit power          W
@@ -36,26 +34,48 @@ class Antenna:
         
         
     def set_power(self, power):
-        '''
-        Set the transmit power in W
-        '''
-        
+        '''Set the transmit power in W'''
         self.P = power
 
 
-    def set_gain(self, frequency, A_theta=None):
-        '''
-        Antenna gain in dB - specific to antennas with a circularly symmetric radiating aperture
-        Augumented for f in Hz, D in m
-        '''
+    def set_gain(self, frequency):
+        '''Antenna gain in dB - specific to antennas with a circularly symmetric radiating aperture'''
         
-        if A_theta is None:
-            self.G_tx = 200.4 + 2*dB(D) + 2*dB(frequency) + dB(eta)     
-
-        else:
-            # Beam shaping - directivity is a function of coverage area in degrees-squared and antenna efficiency
-            self.G_tx = 46.15 - dB(A_theta) + dB(eta_tx)
-        
+        # Augumented for f in Hz, D in m
+        self.G = 200.4 + 2*dB(D) + 2*dB(frequency) + dB(eta)
         
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
         self.EIRP = self.G_tx + self.P
+
+   
+
+class ShapedAntenna(Antenna):
+    '''
+    Extends the general Antenna class to account for beam shaping
+    
+    Input Parameters
+    ----------
+    D           Antenna diameter        m
+    P           Transmit power          W
+    eta         Antenna efficiency      -
+    A_theta     Coverage area           degrees-squared
+    '''
+    
+    def __init__(self, D, P, eta, A_theta):
+        super().__init__(D, P, eta)
+        
+        # Coverage area is measured in degrees-squared
+        self.A_theta = A_theta
+
+    
+    # Override the set_gain method
+    def set_gain(self, frequency):
+        '''
+        Gain for shaped antennas - directivity is a function of coverage area in degrees-squared and antenna efficiency
+        '''
+        
+        # Beam shaping - directivity is a function of coverage area in degrees-squared and antenna efficiency
+        self.G = 46.15 - dB(A_theta) + dB(eta_tx)
+        
+        # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
+        self.EIRP = self.G + self.P

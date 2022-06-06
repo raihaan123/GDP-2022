@@ -13,18 +13,6 @@ Raihaan Usman, Imperial Aeronautics GDP 2022
 
 import numpy as np
 
-# Importing ground segment classes
-from components import GroundStation as gs
-from components import MissionControl as mc
-from components import EndUser as eu
-
-# Importing space segment classes
-from components import Mothership as ms
-
-# Importing link classes
-from components import RF
-
-
 
 # TODO:
 # Add ground traces from the mothership/drones - use Poliastro
