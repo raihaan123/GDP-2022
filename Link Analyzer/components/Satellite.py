@@ -8,12 +8,18 @@ lin = lambda x: 10 ** (x / 10)          # Linear conversion lambda
 class Satellite:
     '''
     Satellite base class
-    
+
     Contains the following models:
     - Antenna()
-    - Power()
-    
-    Input Parameters
-    ----------------
-    
+
+    Parameters
+    ----------
+    a           Semi-major axis             m
+    e           Eccentricity                -
+    i           Inclination                 deg
+    RAAN        Right ascension             deg
+    w           Argument of perigee         deg
+    M           Mean anomaly                deg
+    T0          Epoch                       -
     '''
+    

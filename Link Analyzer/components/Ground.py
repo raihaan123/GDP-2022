@@ -18,17 +18,12 @@ class GroundStation:
     lat         Latitude            deg
     lon         Longitude           deg
     alt         Altitude            m
+    antenna     Antenna object      -
     '''
     
-    def __init__(self, lat, lon, alt):
+    def __init__(self, lat, lon, alt, antenna):
         self.lat = lat
         self.lon = lon
         self.alt = alt
-        
-        
-    def set_antenna(self, antenna):
-        '''
-        Set the antenna of the ground station
-        '''
         
         self.antenna = antenna

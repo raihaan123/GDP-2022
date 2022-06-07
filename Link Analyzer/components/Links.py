@@ -8,39 +8,39 @@ lin = lambda x: 10 ** (x / 10)          # Linear conversion lambda
 class RF:
     '''
     RF Link class
-    
+
     Contains the following models:
     - Tx Antenna()
     - Rx Antenna()
-    
+
     Parameters
     ----------
     f           Carrier Frequency       Hz
     m           Code Rate                -
     mod         Modulation Scheme        -
     '''
-    
+
     def __init__(self, f, TX, RX):
         self.frequency = f
         
         # TX and RX Antenna objects are passed in
         self.TX = TX
         self.RX = RX
-    
-    
-    def calculate_FSPL(self, d):
-        # Free space path loss - in dB
+
+
+    def calculate_fspl(self, d):
+        '''Free space path loss - in dB'''
         c = 299792458
         self.FSPL = 2 * ( dB(d) + dB(self.frequency) + dB(4*pi / c) )
-        
-    
-    def calculate_G_tx(self):
-        # Transmit antenna gain - call works for all antenna types
+
+
+    def calculate_g_tx(self):
+        '''Transmit antenna gain - call works for all antenna types'''
         self.TX.set_gain(self.frequency)
-        
-        
-    def calculate_G_rx(self):
-        # Receive antenna gain - call works for all antenna types
+
+
+    def calculate_g_rx(self):
+        '''Receive antenna gain - call works for all antenna types'''
         self.RX.set_gain(self.frequency)
         
     
