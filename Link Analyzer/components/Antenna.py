@@ -42,10 +42,10 @@ class Antenna:
         '''Antenna gain in dB - specific to antennas with a circularly symmetric radiating aperture'''
         
         # Augumented for f in Hz, D in m
-        self.G = 200.4 + 2*dB(D) + 2*dB(frequency) + dB(eta)
+        self.G = 200.4 + 2*dB(self.D) + 2*dB(self.frequency) + dB(self.eta)
         
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
-        self.EIRP = self.G_tx + self.P
+        self.EIRP = self.G + self.P
 
    
 
@@ -75,7 +75,7 @@ class ShapedAntenna(Antenna):
         '''
         
         # Beam shaping - directivity is a function of coverage area in degrees-squared and antenna efficiency
-        self.G = 46.15 - dB(A_theta) + dB(eta_tx)
+        self.G = 46.15 - dB(A_theta) + dB(self.eta)
         
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
         self.EIRP = self.G + self.P
