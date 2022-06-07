@@ -14,8 +14,21 @@ class GroundStation:
     
     
     Input Parameters
-    ----------
-    
+    ----------------
+    lat         Latitude            deg
+    lon         Longitude           deg
+    alt         Altitude            m
     '''
     
-    
+    def __init__(self, lat, lon, alt):
+        self.lat = lat
+        self.lon = lon
+        self.alt = alt
+        
+        
+    def set_antenna(self, antenna):
+        '''
+        Set the antenna of the ground station
+        '''
+        
+        self.antenna = antenna

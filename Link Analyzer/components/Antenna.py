@@ -10,7 +10,7 @@ class Antenna:
     The general Antenna class
     
     Input Parameters
-    ----------
+    ----------------
     D           Antenna diameter        m
     P           Transmit power          W
     eta         Antenna efficiency      -
@@ -54,7 +54,7 @@ class ShapedAntenna(Antenna):
     Extends the general Antenna class to account for beam shaping
     
     Input Parameters
-    ----------
+    ----------------
     D           Antenna diameter        m
     P           Transmit power          W
     eta         Antenna efficiency      -
