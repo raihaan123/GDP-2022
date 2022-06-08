@@ -19,10 +19,11 @@ class Antenna:
     eta         Antenna efficiency      -
     '''
     
-    def __init__(self, D, P, eta):
+    def __init__(self, D, P, eta, platform):
         self.D = D
         self.P = P
         self.eta = eta
+        self.platform = platform
         
         self.beamwidth = 0
     
@@ -70,15 +71,15 @@ class ShapedAntenna(Antenna):
         # Coverage area is measured in degrees-squared
         self.A_theta = A_theta
 
-    
+
     # Override the set_gain method
     def set_gain(self, frequency):
         '''
         Gain for shaped antennas - directivity is a function of coverage area in degrees-squared and antenna efficiency
         '''
-        
+
         # Beam shaping - directivity is a function of coverage area in degrees-squared and antenna efficiency
         self.G = 46.15 - dB(A_theta) + dB(self.eta)
-        
+
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
         self.EIRP = self.G + self.P

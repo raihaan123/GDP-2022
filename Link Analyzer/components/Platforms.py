@@ -22,7 +22,6 @@ class GroundStation:
     '''
     Defines a Ground Station
 
-
     Input Parameters
     ----------------
     lat         Latitude            deg

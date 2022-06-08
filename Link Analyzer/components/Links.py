@@ -27,7 +27,7 @@ class RF:
         self.TX = TX
         self.RX = RX
 
-        self.d = RX.r_ecef - TX.r_ecef
+        self.d = RX.platform.get_r_ecef() - TX.platform.get_r_ecef()
 
 
     def calculate_fspl(self, d):
