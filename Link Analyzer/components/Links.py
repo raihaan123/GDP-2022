@@ -15,18 +15,23 @@ class RF:
 
     Parameters
     ----------
-    f           Carrier Frequency       Hz
+    f           Carrier Frequency        Hz
     m           Code Rate                -
     mod         Modulation Scheme        -
+    Rb          Bit Rate                 bits/s
     '''
 
-    def __init__(self, f, TX, RX):
+    def __init__(self, f, m, mod, Rb, TX, RX, Ts=525):
         self.frequency = f
         
         # TX and RX Antenna objects are passed in
         self.TX = TX
         self.RX = RX
+        
+        # Effective system noise temperature in K
+        self.Ts = Ts
 
+        # Path distance
         self.d = RX.platform.get_r_ecef() - TX.platform.get_r_ecef()
 
 
@@ -46,18 +51,16 @@ class RF:
         self.RX.set_gain(self.frequency)
 
 
-    def calculate_C(self):
-        '''Received power - the sum of EIRP and G_rx and minus the FSPL, atmospheric and line losses'''
-        self.C = eirp + G_rx - L_s - L_atm - L_line
-
-
-# # C/N0 - Received signal power to noise power ratio - both in dB
-# C_N0 = lambda eirp, g_t, L_total: eirp + g_t - L_total + 228.6
-
-
-# # Eb/N0 - Signal To Noise ratio
-# Eb_N0 = lambda c_n0, Rb: c_n0 - dB(Rb)
-
     def calculate_g_t(self):
         '''Receiver gain to noise temperature ratio - both in dB'''
-        self.G_T = self.RX.G - self.RX.T
+        self.G_T = self.RX.G - dB(self.Ts)
+
+
+    def calculate c_n0(self):
+        '''Received signal power to noise power ratio - both in dB'''
+        self.C_N0 = self.TX.EIRP + self.G_T - self.L_total + 228.6
+
+
+    def calculate_eb_n0(self):
+        '''Signal To Noise ratio'''
+        self.Eb_N0 = self.C_N0 - dB(self.Rb)
