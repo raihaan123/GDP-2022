@@ -9,6 +9,9 @@ class Antenna:
     '''
     The general Antenna class
     
+    Contains the following models:
+    - Platform()
+    
     Input Parameters
     ----------------
     D           Antenna diameter        m

@@ -27,6 +27,8 @@ class RF:
         self.TX = TX
         self.RX = RX
 
+        self.d = RX.r_ecef - TX.r_ecef
+
 
     def calculate_fspl(self, d):
         '''Free space path loss - in dB'''
@@ -42,12 +44,11 @@ class RF:
     def calculate_g_rx(self):
         '''Receive antenna gain - call works for all antenna types'''
         self.RX.set_gain(self.frequency)
-        
-    
+
+
     def calculate_C(self):
-        # Received power - the sum of EIRP and G_rx and minus the FSPL, atmospheric and line losses
+        '''Received power - the sum of EIRP and G_rx and minus the FSPL, atmospheric and line losses'''
         self.C = eirp + G_rx - L_s - L_atm - L_line
-    
 
 
 # # C/N0 - Received signal power to noise power ratio - both in dB
@@ -57,6 +58,6 @@ class RF:
 # # Eb/N0 - Signal To Noise ratio
 # Eb_N0 = lambda c_n0, Rb: c_n0 - dB(Rb)
 
-    def calculate_G_T(self):
-        # Receiver gain to noise temperature ratio - both in dB
+    def calculate_g_t(self):
+        '''Receiver gain to noise temperature ratio - both in dB'''
         self.G_T = self.RX.G - self.RX.T
