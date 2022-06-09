@@ -19,10 +19,11 @@ class Antenna:
     eta         Antenna efficiency      -
     '''
     
-    def __init__(self, D, P, eta, platform):
+    def __init__(self, D=None, P=0, eta=0.5, L_line=-4, platform=None):
         self.D = D
         self.P = P
         self.eta = eta
+        self.L_line = L_line
         self.platform = platform
         
         self.beamwidth = 0
@@ -35,8 +36,8 @@ class Antenna:
         '''
         
         self.beamwidth = 21e9 / (frequency * self.D)
-        
-        
+
+
     def set_power(self, power):
         '''Set the transmit power in W'''
         self.P = power
@@ -44,14 +45,14 @@ class Antenna:
 
     def set_gain(self, frequency):
         '''Antenna gain in dB - specific to antennas with a circularly symmetric radiating aperture'''
-        
+
         # Augumented for f in Hz, D in m
-        self.G = 200.4 + 2*dB(self.D) + 2*dB(self.frequency) + dB(self.eta)
-        
+        self.G = 200.4 + 2*dB(self.D) + 2*dB(frequency) + dB(self.eta)
+
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
         self.EIRP = self.G + self.P
 
-   
+
 
 class ShapedAntenna(Antenna):
     '''
@@ -65,8 +66,8 @@ class ShapedAntenna(Antenna):
     A_theta     Coverage area           degrees-squared
     '''
     
-    def __init__(self, D, P, eta, A_theta):
-        super().__init__(D, P, eta)
+    def __init__(self, P=0, eta=0.7, L_line=-2, A_theta=13.3, platform=None):
+        super().__init__(self, P, eta, L_line, platform)
         
         # Coverage area is measured in degrees-squared
         self.A_theta = A_theta

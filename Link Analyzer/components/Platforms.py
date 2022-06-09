@@ -1,4 +1,5 @@
 import numpy as np
+import pygeodesy as geo
 
 ### Utility functions - will move somewhere better ###
 dB = lambda x: 10 * np.log10(x)         # Decibel conversion lambda
@@ -30,26 +31,35 @@ class GroundStation:
     '''
 
     def __init__(self, lat, lon, alt):
-        self.lat = lat
-        self.lon = lon
+        self.lat = np.deg2rad(lat)
+        self.lon = np.deg2rad(lon)
         self.alt = alt
         
-        to_ecef()
+        self.to_ecef()
 
 
     def to_ecef(self):
         '''
         Calculate the ground station position in ECEF coordinates
         '''
-        # Convert lat, lon, alt to radians
-        lat_rad = np.deg2rad(self.lat)
-        lon_rad = np.deg2rad(self.lon)
+        lat = self.lat
+        lon = self.lon
         
-        self.r_ecef = np.array([
-            self.alt * np.cos(lat_rad) * np.cos(lon_rad),
-            self.alt * np.cos(lat_rad) * np.sin(lon_rad),
-            self.alt * np.sin(lat_rad)
-        ])
+        # convert LLA to ECEF with the following equations
+        cos_lat = np.cos(lat)
+        cos_lon = np.cos(lon)
+        sin_lat = np.sin(lat)
+
+        A = 6378137
+        B = 6356752.31424518
+        H = self.alt
+        E1 = np.sqrt((A**2-B**2)/A**2)
+        E2 = E1**2
+        N = A/np.sqrt(1-E2*(sin_lat**2))
+
+        self.r_ecef = [(N+H)*cos_lat*cos_lon,
+                     (N+H)*cos_lat*np.sin(lon),
+                     (N*(1-E2)+H)*sin_lat]
 
 
 
