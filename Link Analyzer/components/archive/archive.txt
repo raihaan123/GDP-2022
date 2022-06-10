@@ -1,0 +1,8 @@
+    def calculate_g_t(self):
+        '''Receiver gain to noise temperature ratio - both in dB'''
+        self.G_T = self.RX.G - dB(self.Ts)
+        
+        
+    def calculate_c(self):
+        '''Calculate the link capacity'''
+        self.C = self.TX.EIRP + self.RX.G - self.L_rx_chain     
