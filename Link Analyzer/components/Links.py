@@ -28,23 +28,29 @@ class RF:
         # TX and RX Antenna objects are passed in
         self.TX = TX
         self.RX = RX
-
-        # Effective system noise temperature in K
+        
         self.Ts = Ts
+        self.m = m
+        self.mod = mod
+        self.Rb = Rb
    
 
     def compute(self):
         # Path distance - take modulus of the difference of the two antenna positions
         self.d = np.linalg.norm(self.TX.platform.r_ecef - self.RX.platform.r_ecef)
         
-        # Total line losses
-        self.L_total = self.TX.L_line + self.RX.L_line
-        
-        # Compute components in the Link Budget
+        # Total system losses
         self.calculate_fspl()
+        self.calculate_L_atm()
+        
+        self.L_total_rx = self.RX.L_line + self.FSPL + self.L_atm
+        self.L_total = self.L_total_rx + self.TX.L_line
+
+        # Compute components in the Link Budget
         self.calculate_g_tx()
         self.calculate_g_rx()
         self.calculate_g_t()
+        self.calculate_c()
         self.calculate_c_n0()
         self.calculate_eb_n0()
 
@@ -53,6 +59,10 @@ class RF:
         '''Free space path loss - in dB'''
         c = 299792458
         self.FSPL = 2 * ( dB(self.d) + dB(self.frequency) + dB(4*pi / c) )
+        
+        
+    def calculate_L_atm(self):
+        self.L_atm = 10
 
 
     def calculate_g_tx(self):
@@ -68,13 +78,30 @@ class RF:
     def calculate_g_t(self):
         '''Receiver gain to noise temperature ratio - both in dB'''
         self.G_T = self.RX.G - dB(self.Ts)
+        
+        
+    def calculate_c(self):
+        '''Calculate the link capacity'''
+        self.C = self.TX.EIRP + self.RX.G - self.L_total_rx
 
 
     def calculate_c_n0(self):
         '''Received signal power to noise power ratio - both in dB'''
-        self.C_N0 = self.TX.EIRP + self.G_T - self.L_total + 228.6
+        self.C_N0 = self.TX.EIRP + self.G_T - self.L_total_rx + 228.6
 
 
     def calculate_eb_n0(self):
         '''Signal To Noise ratio'''
         self.Eb_N0 = self.C_N0 - dB(self.Rb)
+
+    
+    def report(self):
+        '''Print the link budget'''
+        print('EIRP:',  self.TX.EIRP)
+        print('FSPL:',  self.FSPL)
+        print('G_tx:',  self.TX.G)
+        print('G_rx:',  self.RX.G)
+        print('G_t:',   self.G_T)
+        print('C:',     self.C)
+        print('C_n0:',  self.C_N0)
+        print('EB_n0:', self.Eb_N0)

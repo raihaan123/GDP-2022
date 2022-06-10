@@ -3,6 +3,8 @@ import numpy as np
 ### Utility functions - will move somewhere better ###
 dB = lambda x: 10 * np.log10(x)         # Decibel conversion lambda
 lin = lambda x: 10 ** (x / 10)          # Linear conversion lambda
+pi = np.pi                              # Good old pi
+c = 299792458                           # Speed of light
 
 
 class Antenna:
@@ -19,7 +21,7 @@ class Antenna:
     eta         Antenna efficiency      -
     '''
     
-    def __init__(self, D=None, P=0, eta=0.5, L_line=-4, platform=None):
+    def __init__(self, D=None, P=0, eta=0.5, L_line=4, platform=None):
         self.D = D
         self.P = P
         self.eta = eta
@@ -47,10 +49,10 @@ class Antenna:
         '''Antenna gain in dB - specific to antennas with a circularly symmetric radiating aperture'''
 
         # Augumented for f in Hz, D in m
-        self.G = 200.4 + 2*dB(self.D) + 2*dB(frequency) + dB(self.eta)
+        self.G = 2*dB(pi/c) + 2*dB(self.D) + 2*dB(frequency) + dB(self.eta)
 
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
-        self.EIRP = self.G + self.P
+        self.EIRP = self.G + dB(self.P) - self.L_line
 
 
 
@@ -80,7 +82,7 @@ class ShapedAntenna(Antenna):
         '''
 
         # Beam shaping - directivity is a function of coverage area in degrees-squared and antenna efficiency
-        self.G = 46.15 - dB(A_theta) + dB(self.eta)
+        self.G = 46.15 - dB(self.A_theta) + dB(self.eta)
 
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
         self.EIRP = self.G + self.P
