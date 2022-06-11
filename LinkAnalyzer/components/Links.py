@@ -24,7 +24,7 @@ class RF:
     '''
 
     def __init__(self, f, TX, RX, Ts=525, m=0, mod=None, Rb=0):
-        self.frequency = f
+        self.f = f
 
         # TX and RX Antenna objects are passed in
         self.TX = TX
@@ -37,20 +37,26 @@ class RF:
 
 
 
-    def compute(self):
+    def compute(self, P_tx, L_line_tx, L_line_rx):
+        ''' Calculate the link budget! '''
+        
+        # Assign parameters to the two antennas
+        self.TX.set_operating_params(L_line_tx, frequency=self.f, power=P_tx)
+        self.RX.set_operating_params(L_line_rx, frequency=self.f)
+
         # Path distance - take modulus of the difference of the two antenna positions
         self.d = np.linalg.norm(self.TX.platform.r_ecef - self.RX.platform.r_ecef)
-        
-        # Total system losses
-        self.FSPL = 2 * ( dB(self.d) + dB(self.frequency) + dB(4*pi / c) )
+
+        # Total system losses - free space, atmospheric, and line losses
+        self.FSPL = 2 * ( dB(self.d) + dB(self.f) + dB(4*pi / c) )
         self.calculate_L_atm()
-        
+
         self.L_rx_chain = self.RX.L_line + self.FSPL + self.L_atm
         self.L_total = self.L_rx_chain + self.TX.L_line
 
         # Compute antenna gains
-        self.TX.set_gain(self.frequency)
-        self.RX.set_gain(self.frequency)
+        self.TX.calculate()
+        self.RX.calculate()
         
         # Calculate signal to noise ratio
         self.calculate_eb_n0()
@@ -80,10 +86,14 @@ class RF:
     def report(self):
         '''Print the link budget'''
 
-        print(f'EIRP:   {self.TX.EIRP:.2f} dB\n\
-                FSPL:   {self.FSPL:.2f} dB\n\
-                G_tx:   {self.TX.G:.2f} dB\n\
-                G_rx:   {self.RX.G:.2f} dB\n\
-                G_t:    {self.G_T:.2f} dB\n\
-                C_n0:   {self.C_N0:.2f} dB\n\
-                Eb_n0:  {self.Eb_N0:.2f} dB')
+        print(f'Link Budget Report\n\
+                Frequency:      {self.f} Hz\n\
+                Path Distance:  {self.d} m\n\
+                EIRP:           {self.TX.EIRP:.2f} dBW\n\
+                FSPL:           {self.FSPL:.2f} dB\n\
+                G_tx:           {self.TX.G:.2f} dBi\n\
+                G_rx:           {self.RX.G:.2f} dBi\n\
+                G/T:            {self.G_T:.2f} dB/K\n\
+                C/N0:           {self.C_N0:.2f} dB-Hz\n\
+                Eb/n0:          {self.Eb_N0:.2f} dB')
+
