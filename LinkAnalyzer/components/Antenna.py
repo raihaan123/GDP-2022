@@ -12,7 +12,6 @@ class Antenna:
     Input Parameters
     ----------------
     D           Antenna diameter        m
-    P           Transmit power          W
     eta         Antenna efficiency      -
     '''
     
@@ -55,15 +54,16 @@ class ShapedAntenna(Antenna):
     '''
     Extends the general Antenna class to account for beam shaping
     
+    Contains the following models:
+    - Platform()
+    
     Input Parameters
     ----------------
-    D           Antenna diameter        m
-    P           Transmit power          W
     eta         Antenna efficiency      -
     A_theta     Coverage area           degrees-squared
     '''
     
-    def __init__(self, eta=0.7, A_theta=13.3, platform=None):
+    def __init__(self, A_theta=13.3, eta=0.7, platform=None):
         super().__init__(self, eta=eta, platform=platform)
         
         # Coverage area is measured in degrees-squared

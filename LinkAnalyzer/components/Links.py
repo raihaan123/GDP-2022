@@ -1,10 +1,5 @@
 import numpy as np
-
-### Utility functions - will move somewhere better ###
-dB = lambda x: 10 * np.log10(x)         # Decibel conversion lambda
-lin = lambda x: 10 ** (x / 10)          # Linear conversion lambda
-pi = np.pi                              # Good old pi
-c = 299792458                           # Speed of light
+from .utils import dB, lin, pi, c
 
 
 class RF:
@@ -17,42 +12,55 @@ class RF:
 
     Parameters
     ----------
-    f           Carrier Frequency        Hz
-    m           Code Rate                -
-    mod         Modulation Scheme        -
-    Rb          Bit Rate                 bits/s
+    Ts           Transmit System Temperature      K
     '''
 
-    def __init__(self, f, TX, RX, Ts=525, m=0, mod=None, Rb=0):
-        self.f = f
-
+    def __init__(self, TX, RX, Ts=525):
+        
         # TX and RX Antenna objects are passed in
         self.TX = TX
         self.RX = RX
         
         self.Ts = Ts
-        self.m = m
+
+
+
+    def compute(self, f, P_tx, Rb, L_line_tx, L_line_rx, mod=None, m=1):
+        '''
+        Calculate the link budget!
+        
+        Parameters
+        ----------
+        f           Carrier Frequency           Hz
+        P_tx        Transmit Power              W
+        Rb          Bit Rate                    bits/s
+        L_line_tx   Transmit Line Loss          dB
+        L_line_rx   Receive Line Loss           dB
+        m           Code Rate                   -
+        mod         Modulation Scheme           -       
+        '''
+        
+        # Signal parameters
+        self.f = f
         self.mod = mod
+        self.m = m
+        
+        # Data parameters
         self.Rb = Rb
 
-
-
-    def compute(self, P_tx, L_line_tx, L_line_rx):
-        ''' Calculate the link budget! '''
-        
         # Assign parameters to the two antennas
-        self.TX.set_operating_params(L_line_tx, frequency=self.f, power=P_tx)
-        self.RX.set_operating_params(L_line_rx, frequency=self.f)
+        self.TX.set_operating_params(L_line_tx, frequency=f, power=P_tx)
+        self.RX.set_operating_params(L_line_rx, frequency=f)
 
         # Path distance - take modulus of the difference of the two antenna positions
-        self.d = np.linalg.norm(self.TX.platform.r_ecef - self.RX.platform.r_ecef)
+        d = self.d = np.linalg.norm(self.TX.platform.r_ecef - self.RX.platform.r_ecef)
 
         # Total system losses - free space, atmospheric, and line losses
-        self.FSPL = 2 * ( dB(self.d) + dB(self.f) + dB(4*pi / c) )
-        self.calculate_L_atm()
+        FSPL = self.FSPL = 2 * ( dB(d) + dB(f) + dB(4*pi / c) )
+        L_atm = self.L_atm = self.calculate_L_atm()
 
-        self.L_rx_chain = self.RX.L_line + self.FSPL + self.L_atm
-        self.L_total = self.L_rx_chain + self.TX.L_line
+        self.L_rx_chain = L_line_rx + FSPL + L_atm
+        self.L_total = self.L_rx_chain + L_line_tx
 
         # Compute antenna gains
         self.TX.calculate()
@@ -65,12 +73,12 @@ class RF:
 
     def calculate_L_atm(self):
         '''Calculate the atmospheric loss - extend this!!!'''
-        self.L_atm = 10
+        return 10
 
 
 
     def calculate_eb_n0(self):
-        '''Calculate Signal To Noise ratio'''
+        '''Calculate Signal to Noise ratio'''
 
         # Receiver gain to noise temperature ratio
         self.G_T = self.RX.G - dB(self.Ts)
