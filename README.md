@@ -9,7 +9,7 @@ A python package to dynamically compute all link budgets in **any** space/ground
 
 </br>
 
-1. Set antenna configurations mounted on each platform - ```ShapedAntenna()``` and ```PhasedArray()``` extend the general ```Antenna()```
+2. Set antenna configurations mounted on each platform - ```ShapedAntenna()``` and ```PhasedArray()``` extend the general ```Antenna()```
 
 </br>
 
