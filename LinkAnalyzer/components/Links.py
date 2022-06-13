@@ -12,7 +12,7 @@ class RF:
 
     Parameters
     ----------
-    Ts           Transmit System Temperature      K
+    Ts              System Temperature              K
     '''
 
     def __init__(self, TX, RX, Ts=525):
@@ -31,13 +31,13 @@ class RF:
         
         Parameters
         ----------
-        f           Carrier Frequency           Hz
-        P_tx        Transmit Power              W
-        Rb          Bit Rate                    bits/s
-        L_line_tx   Transmit Line Loss          dB
-        L_line_rx   Receive Line Loss           dB
-        m           Code Rate                   -
-        mod         Modulation Scheme           -       
+        f               Carrier Frequency           Hz
+        P_tx            Transmit Power              W
+        Rb              Bit Rate                    bits/s
+        L_line_tx       Transmit Line Loss          dB
+        L_line_rx       Receive Line Loss           dB
+        m               Code Rate                   -
+        mod             Modulation Scheme           -       
         '''
         
         # Signal parameters
