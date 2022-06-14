@@ -4,7 +4,7 @@ Repository for project work for the space debris removal GDP at Imperial Aeronau
 ## Link Analyzer
 A python package to dynamically compute all link budgets in **any** space/ground network!
 
-1. Define all networked platforms involved in the mission - ```GroundStation()```, ```Satellite()```, and ```GEORelay()``` extend ```Platform()```
+1. Register all networked platforms involved in the mission - ```GroundStation()```, ```Satellite()```, and ```GEORelay()``` extend ```Platform()```
     - Propagate satellite positions for the duration of the mission
 
 </br>
@@ -17,7 +17,7 @@ A python package to dynamically compute all link budgets in **any** space/ground
 
 </br>
 
-4. Compute all link margins
+4. Compute all link margins and performance metrics
 
 </br>
 
