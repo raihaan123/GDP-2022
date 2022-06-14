@@ -42,17 +42,21 @@ Also note there will be times when the Ground/Mothership link is not available -
 Current To-Dos
 --------------
 
-- Atmosphere loss function - depends on elevation angle from ground station but can assume wosrst case
-- Orbit propagation function - I think this is easiest to do with a library like 
-- Network handler
+- Atmosphere loss function - depends on elevation angle from ground station but can assume worst case
+- Orbit propagation function - I think this is easiest to do with a library like Poliastro
+- Network handler - Library like PyViz
+
+Fun Plots (order of importance):
+- Link diagram showing gains and losses from transmitter to receiver
+- Ground station locations on a world map
+- 2D diagram of orbit of mothership and TDRSS locations
 
 '''
 
 
-from LinkAnalyzer.components import *
+from components import *
 
-
-platforms = []
 
 # Create a list of all platforms
+platforms = []
 

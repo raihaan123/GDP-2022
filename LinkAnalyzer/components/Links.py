@@ -22,6 +22,7 @@ class RF:
         self.RX = RX
         
         self.Ts = Ts
+        self.active = False
 
 
 
