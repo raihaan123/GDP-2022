@@ -48,12 +48,12 @@ class GroundStation:
         cos_lon = np.cos(lon)
         sin_lat = np.sin(lat)
 
-        A = 6378137
-        B = 6356752.31424518
-        H = self.alt
-        E1 = np.sqrt((A**2-B**2)/A**2)
-        E2 = E1**2
-        N = A/np.sqrt(1-E2*(sin_lat**2))
+        A       = 6378137
+        B       = 6356752.31424518
+        H       = self.alt
+        E1      = np.sqrt((A**2-B**2)/A**2)
+        E2      = E1**2
+        N       = A/np.sqrt(1-E2*(sin_lat**2))
 
         self.r_ecef = [(N+H)*cos_lat*cos_lon,
                      (N+H)*cos_lat*np.sin(lon),
