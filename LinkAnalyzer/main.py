@@ -57,11 +57,11 @@ Problem Definition
 
   4) Debris Observation, Detumble and Capture   - Mothership/Ground:  Enabled
                                                 - Mothership/TDRSS:   Enabled
-                                                - Mothership/Drones:  Highly directional antenna used
+                                                - Mothership/Drones:  Directional antenna used (Horn)
 
-  5) Deorbit                                    - Mothership/Ground:  Disabled
+  5) Deorbit                                    - Mothership/Ground:  Enabled
                                                 - Mothership/TDRSS:   Enabled
-                                                - Mothership/Drones:  Highly directional antenna used
+                                                - Mothership/Drones:  Directional antenna used (Horn)
 
 
 ================================
