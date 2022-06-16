@@ -100,13 +100,42 @@ class GEORelay(Satellite):
     
     Parameters
     ----------
-    r_ecef     Satellite position in ECEF frame
+    r_ecef     Position vector in ECEF frame
     '''
     
     def __init__(self, r_ecef):
         self.r_ecef = r_ecef
 
 
+
 class Network:
     '''
     Networks are collections of platforms which are part of a wider system.
+    '''
+
+    def __init__(self):
+        None
+
+
+    def add_platform(self, platform):
+        #platform is a dictionary of platforms - append to self.platforms 
+        self.platforms.append(platform)
+
+
+    def nearest_available_platform(self, r_ecef):
+        ''' Find index i for the nearest available platform '''
+        
+        # Find the nearest platform by searching the list of platforms
+        shortest_distance = 0
+        for i, platform in enumerate(self.platforms):
+            if np.linalg.norm(platform.r_ecef - r_ecef) < shortest_distance:
+                shortest_distance = np.linalg.norm(platform.r_ecef - r_ecef)
+                self.active = platforms[i]
+            
+
+def GroundNetwork(Network):
+    None
+    
+
+def GEONetwork(Network):
+    None

@@ -97,3 +97,29 @@ Fun Plots (order of importance):
 from components import *
 
 import numpy as np
+
+''' Example system definition using LinkAnalyzer '''
+
+### Add platforms ###
+
+### Add networks ###
+
+### Add links ###
+
+### Add antennas ###
+
+### Add statemachine ###
+
+''' Example solution using LinkAnalyzer '''
+
+### Add Initial Conditions ###
+
+### while loop over mission duration ###
+
+  ### Select Platform to use in each network ###
+
+  ### Select Antenna to use in each link ###
+
+  ### Calculate P_tx from Link Budget ###
+
+  ### Propagate Orbit ###

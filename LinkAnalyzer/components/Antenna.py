@@ -2,7 +2,7 @@ import numpy as np
 from .utils import dB, lin, pi, c
 
 
-class Antenna:
+class Antenna:  # Add name to antenna
     '''
     The general Antenna class
     
