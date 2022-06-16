@@ -6,6 +6,10 @@ from .utils import dB, lin, pi, c
 class Platform:
     '''
     Defines a general Platform - an Antenna is assigned a Platform
+    
+    Contains the following models:
+    - Antenna()
+    
     '''
 
     def __init__(self):
@@ -17,9 +21,12 @@ class Platform:
 
 
 
-class GroundStation:
+class GroundStation(Platform):
     '''
     Defines a Ground Station
+    
+    Contains the following models:
+    - Antenna()
 
     Input Parameters
     ----------------
@@ -64,6 +71,9 @@ class GroundStation:
 class Satellite(Platform):
     '''
     Satellite base class
+    
+    Contains the following models:
+    - Antenna()
 
     Parameters
     ----------
@@ -85,6 +95,9 @@ class GEORelay(Satellite):
     '''
     Geostationary Relay satellite class - r_ecef is approximately fixed
     
+    Contains the following models:
+    - Antenna()
+    
     Parameters
     ----------
     r_ecef     Satellite position in ECEF frame
@@ -92,3 +105,8 @@ class GEORelay(Satellite):
     
     def __init__(self, r_ecef):
         self.r_ecef = r_ecef
+
+
+class Network:
+    '''
+    Networks are collections of platforms which are part of a wider system.

@@ -95,3 +95,5 @@ Fun Plots (order of importance):
 
 
 from components import *
+
+import numpy as np

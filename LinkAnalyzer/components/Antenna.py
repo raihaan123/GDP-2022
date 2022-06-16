@@ -6,9 +6,6 @@ class Antenna:
     '''
     The general Antenna class
     
-    Contains the following models:
-    - Platform()
-    
     Input Parameters
     ----------------
     D           Antenna diameter        m
@@ -53,9 +50,6 @@ class Antenna:
 class ShapedAntenna(Antenna):
     '''
     Extends the general Antenna class to account for beam shaping
-    
-    Contains the following models:
-    - Platform()
     
     Input Parameters
     ----------------
