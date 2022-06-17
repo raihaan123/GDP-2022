@@ -122,4 +122,7 @@ import numpy as np
 
   ### Calculate P_tx from Link Budget ###
 
-  ### Propagate Orbit ###
+  ### Propagate Orbit ###                # G_tx:           {self.TX.G:.2f} dBi\n\
+                # G_rx:           {self.RX.G:.2f} dBi\n\
+                # G/T:            {self.G_T:.2f} dB/K\n\
+                # C/N0:           {self.C_N0:.2f} dB-Hz\n\

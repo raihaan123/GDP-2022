@@ -18,7 +18,10 @@ class Antenna:  # Add name to antenna
         self.platform = platform
         
         # Will change based on running mode in Link object
-        self.is_tx = False
+        self.is_tx          = False
+        
+        # Mothership is not fixed power
+        self.fixed_power    = False
 
 
     def set_operating_params(self, line_loss, frequency, power=None):
@@ -28,7 +31,8 @@ class Antenna:  # Add name to antenna
         self.f = frequency
         self.L_line = line_loss
         
-        if power is not None:   self.is_tx = True
+        if power != None:   self.is_tx          = True
+        if power != 0:      self.fixed_power    = True
 
 
     def calculate(self):
@@ -43,7 +47,7 @@ class Antenna:  # Add name to antenna
         self.G = 2*dB(pi/c) + 2*dB(self.D) + 2*dB(self.f) + dB(self.eta)
         
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
-        if self.is_tx:  self.EIRP = self.G + dB(self.P) - self.L_line
+        if self.is_tx and self.fixed_power:  self.EIRP = self.G + dB(self.P) - self.L_line
 
 
 
@@ -72,7 +76,7 @@ class ShapedAntenna(Antenna):
         self.G = 46.15 - dB(self.A_theta) + dB(self.eta)
 
         # EIRP - Effective Isotropic Radiated Power = Forward power + Antenna gain
-        if self.is_tx:  self.EIRP = self.G + dB(self.P) - self.L_line
+        if self.is_tx and self.fixed_power:  self.EIRP = self.G + dB(self.P) - self.L_line
 
 
 

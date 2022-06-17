@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.special import erfcinv as erfcinv
 from .utils import dB, lin, pi, c
 
 
@@ -16,38 +17,37 @@ class RF:
     '''
 
     def __init__(self, TX, RX, Ts=525):
-        
+
         # TX and RX Antenna objects are passed in
         self.TX = TX
         self.RX = RX
-        
+
         self.Ts = Ts
         self.active = False
 
 
-
-    def compute(self, f, P_tx, Rb, L_line_tx, L_line_rx, mod=None, m=1):
+    def compute(self, f, Bw, Rb, m, L_line_tx, L_line_rx, BER=0, P_tx=0):
         '''
         Calculate the link budget!
-        
+
         Parameters
         ----------
         f               Carrier Frequency           Hz
-        P_tx            Transmit Power              W
+        Bw              Bandwidth                   Hz
         Rb              Bit Rate                    bits/s
+        m               Bits per Symbol             -
         L_line_tx       Transmit Line Loss          dB
         L_line_rx       Receive Line Loss           dB
-        m               Code Rate                   -
-        mod             Modulation Scheme           -       
+        BER             Bit Error Rate              -
+        P_tx            Transmit Power              dBm
         '''
-        
-        # Signal parameters
-        self.f = f
-        self.mod = mod
-        self.m = m
-        
-        # Data parameters
-        self.Rb = Rb
+
+        # Carrier signal parameters
+        self.f      = f
+        self.Bw     = Bw
+        self.Rb     = Rb
+        self.m      = m
+        self.BER    = BER
 
         # Assign parameters to the two antennas
         self.TX.set_operating_params(L_line_tx, frequency=f, power=P_tx)
@@ -66,16 +66,25 @@ class RF:
         # Compute antenna gains
         self.TX.calculate()
         self.RX.calculate()
-        
-        # Calculate signal to noise ratio
-        self.calculate_eb_n0()
 
+        # Do the thing
+        if self.TX.fixed_power:     self.calculate_eb_n0()
+        else:                       self.calculate_P_tx()
 
 
     def calculate_L_atm(self):
         '''Calculate the atmospheric loss - extend this!!!'''
         return 10
 
+
+    def BER_to_Eb_N0(self):
+        ''' Convert BER to Eb/N0 '''
+        
+        m       = self.m
+        M       = 2**m
+        BER     = self.BER
+        
+        self.Eb_N0 = (erfcinv(m*BER) / np.sin(pi/M)) ** 2 / m        # 16-19 rearranged
 
 
     def calculate_eb_n0(self):
@@ -89,12 +98,17 @@ class RF:
 
         # Signal To Noise ratio
         self.Eb_N0 = self.C_N0 - dB(self.Rb)
+
+
+    def calculate_P_tx(self):
+        ''' Calculate the transmit power needed '''
+        
+        # Convert BER to Eb/N0 using the specified modulation scheme
+        self.BER_to_Eb_N0()
         
         # Rearranging to find P_tx required to achieve Eb/N0 and thus BER
-        # self.TX.EIRP  = self.Eb_N0 - self.RX.G + dB(self.Ts) + self.L_rx_chain - 228.6 + dB(self.Rb)
-        # self.TX.P     = self.TX.EIRP - self.TX.G + self.TX.L_line
-        
-
+        self.TX.EIRP  = self.Eb_N0 - self.RX.G + dB(self.Ts) + self.L_rx_chain - 228.6 + dB(self.Rb)
+        self.TX.P     = self.TX.EIRP - self.TX.G + self.TX.L_line
 
 
     def report(self):
@@ -103,11 +117,13 @@ class RF:
         print(f'Link Budget Report\n\
                 Frequency:      {self.f} Hz\n\
                 Path Distance:  {self.d} m\n\
+                Power (W):      {self.TX.P} W\n\
                 EIRP:           {self.TX.EIRP:.2f} dBW\n\
                 FSPL:           {self.FSPL:.2f} dB\n\
-                G_tx:           {self.TX.G:.2f} dBi\n\
-                G_rx:           {self.RX.G:.2f} dBi\n\
-                G/T:            {self.G_T:.2f} dB/K\n\
-                C/N0:           {self.C_N0:.2f} dB-Hz\n\
                 Eb/n0:          {self.Eb_N0:.2f} dB')
 
+
+                # G_tx:           {self.TX.G:.2f} dBi\n\
+                # G_rx:           {self.RX.G:.2f} dBi\n\
+                # G/T:            {self.G_T:.2f} dB/K\n\
+                # C/N0:           {self.C_N0:.2f} dB-Hz\n\
