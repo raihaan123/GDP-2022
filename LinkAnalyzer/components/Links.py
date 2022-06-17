@@ -1,5 +1,6 @@
 import numpy as np
-from scipy.special import erfcinv as erfcinv
+from scipy.special import erfc, erfcinv
+from decimal import Decimal
 from .utils import dB, lin, pi, c
 
 
@@ -77,14 +78,14 @@ class RF:
         return 10
 
 
-    def BER_to_Eb_N0(self):
-        ''' Convert BER to Eb/N0 '''
+    def Eb_N0_to_BER(self):
+        ''' Convert Eb/N0 to BER '''
+
+        m      = self.m
+        M      = 2**m
+        Eb_N0  = self.Eb_N0
         
-        m       = self.m
-        M       = 2**m
-        BER     = self.BER
-        
-        self.Eb_N0 = (erfcinv(m*BER) / np.sin(pi/M)) ** 2 / m        # 16-19 rearranged
+        self.BER = erfc(np.sqrt(m*Eb_N0) * np.sin(pi/M)) / m        # 16-19
 
 
     def calculate_eb_n0(self):
@@ -98,6 +99,19 @@ class RF:
 
         # Signal To Noise ratio
         self.Eb_N0 = self.C_N0 - dB(self.Rb)
+        
+        # Convert Eb/N0 to BER
+        self.Eb_N0_to_BER()
+
+
+    def BER_to_Eb_N0(self):
+        ''' Convert BER to Eb/N0 '''
+        
+        m       = self.m
+        M       = 2**m
+        BER     = self.BER
+        
+        self.Eb_N0 = (erfcinv(m*BER) / np.sin(pi/M)) ** 2 / m        # 16-19 rearranged
 
 
     def calculate_P_tx(self):
@@ -120,8 +134,10 @@ class RF:
                 Power (W):      {self.TX.P} W\n\
                 EIRP:           {self.TX.EIRP:.2f} dBW\n\
                 FSPL:           {self.FSPL:.2f} dB\n\
-                Eb/n0:          {self.Eb_N0:.2f} dB')
-
+                Eb/n0:          {self.Eb_N0:.2f} dB\n\
+                BER:            {Decimal(self.BER):.2e}')
+# print ber in scientific notation - use decimal.Decimal()
+# print(f'BER:            {Decimal(self.BER):.2e}')
 
                 # G_tx:           {self.TX.G:.2f} dBi\n\
                 # G_rx:           {self.RX.G:.2f} dBi\n\
