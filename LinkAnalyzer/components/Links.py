@@ -89,6 +89,11 @@ class RF:
 
         # Signal To Noise ratio
         self.Eb_N0 = self.C_N0 - dB(self.Rb)
+        
+        # Rearranging to find P_tx required to achieve Eb/N0 and thus BER
+        # self.TX.EIRP  = self.Eb_N0 - self.RX.G + dB(self.Ts) + self.L_rx_chain - 228.6 + dB(self.Rb)
+        # self.TX.P     = self.TX.EIRP - self.TX.G + self.TX.L_line
+        
 
 
 
